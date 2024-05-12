@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <a id="code-btn" href="https://github.com/KevinDeBenedetti" target="_blank">
+  <a id="code-btn" href="https://github.com/KevinDeBenedetti/solar-map" target="_blank">
     <svg
         height="24"
         width="24"
