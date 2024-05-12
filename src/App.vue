@@ -1,24 +1,34 @@
 <script setup lang="ts">
 import * as THREE from 'three';
 import { onMounted, onUnmounted, ref } from 'vue';
+import type { Ref } from 'vue';
 import RepoButton from './components/RepoButton.vue';
 import TitleBanner from './components/TitleBanner.vue';
 
 // Déclarer les variables
-const threeMount = ref(null);
+// const threeMount = ref(null);
+const threeMount: Ref<Element | null> = ref(null);
 let scene: any, camera: any, renderer: any;
 
 let planets: any[] = [];
-let sun;
+let sun: any;
 
-const planetData = [
-  { name: "Mercury", distance: 0.39, speed: 4.74, texture: '/textures/8k_mercury.jpg', size: 0.38 },
-  { name: "Venus", distance: 0.72, speed: 3.5, texture: '/textures/4k_venus_atmosphere.jpg', size: 0.95 },
-  { name: "Earth", distance: 1, speed: 2.98, texture: '/textures/8k_earth_daymap.jpg', size: 1.00 },
-  { name: "Mars", distance: 1.52, speed: 2.41, texture: '/textures/8k_mars.jpg', size: 0.53 },
-  { name: "Jupiter", distance: 5.20, speed: 1.31, texture: '/textures/8k_jupiter.jpg', size: 11.21 },
-  { name: "Uranus", distance: 19.22, speed: 0.43, texture: '/textures/2k_uranus.jpg', size: 4.01 },
-  { name: "Neptune", distance: 30.05, speed: 0.34, texture: '/textures/2k_neptune.jpg', size: 3.88 }
+interface Planet {
+  name: string;
+  distance: number;
+  speed: number;
+  texture: string;
+  size: number;
+}
+
+const planetData: Planet[] = [
+  { name: "Mercury", distance: 0.39, speed: 4.74, texture: '/solar-map/textures/8k_mercury.jpg', size: 0.38 },
+  { name: "Venus", distance: 0.72, speed: 3.5, texture: '/solar-map/textures/4k_venus_atmosphere.jpg', size: 0.95 },
+  { name: "Earth", distance: 1, speed: 2.98, texture: '/solar-map/textures/8k_earth_daymap.jpg', size: 1.00 },
+  { name: "Mars", distance: 1.52, speed: 2.41, texture: '/solar-map/textures/8k_mars.jpg', size: 0.53 },
+  { name: "Jupiter", distance: 5.20, speed: 1.31, texture: '/solar-map/textures/8k_jupiter.jpg', size: 11.21 },
+  { name: "Uranus", distance: 19.22, speed: 0.43, texture: '/solar-map/textures/2k_uranus.jpg', size: 4.01 },
+  { name: "Neptune", distance: 30.05, speed: 0.34, texture: '/solar-map/textures/2k_neptune.jpg', size: 3.88 }
 ];
 
 onMounted(() => {
@@ -40,7 +50,7 @@ function initThree() {
 
   // Configurer le fond avec une image
   const loader = new THREE.TextureLoader();
-  loader.load('/textures/8k_stars.jpg', function(texture: any) {
+  loader.load('/solar-map/textures/8k_stars.jpg', function(texture: any) {
     const backgroundAspect = texture.image.width / texture.image.height;
     const windowAspect = window.innerWidth / window.innerHeight;
     texture.offset.x = backgroundAspect > windowAspect ? (1 - windowAspect / backgroundAspect) / 2 : 0;
@@ -57,11 +67,14 @@ function initThree() {
   // Configurer le rendu
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
-  threeMount.value.appendChild(renderer.domElement);
+
+  if (threeMount.value) {
+    threeMount.value.appendChild(renderer.domElement);
+  }
 
   // Création du soleil
   const sunGeometry = new THREE.SphereGeometry(2, 32, 32);
-  const sunMaterial = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('/textures/8k_sun.jpg') });
+  const sunMaterial = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('/solar-map/textures/8k_sun.jpg') });
   sun = new THREE.Mesh(sunGeometry, sunMaterial);
   scene.add(sun);
 
@@ -72,7 +85,7 @@ function initThree() {
   window.addEventListener('resize', onWindowResize, false);
 }
 
-function createPlanet(size, texturePath, distance, speed) {
+function createPlanet(size: number, texturePath: string, distance: number, speed: number) {
   const geometry = new THREE.SphereGeometry(size, 32, 32);
   const texture = new THREE.TextureLoader().load(texturePath);
   const material = new THREE.MeshBasicMaterial({ map: texture });

@@ -5,7 +5,7 @@
 <template>
     <div id="title">
 
-        <img src="/public/logo.png" alt="Logo Solar Map">
+        <img src="/logo.png" alt="Logo Solar Map">
 
         <h1>Solar Map</h1>
 
